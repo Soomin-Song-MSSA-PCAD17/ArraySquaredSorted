@@ -26,6 +26,7 @@ Demo([]); // empty array
 
 // ArgumentNullException should be thrown for null input
 try { Demo(null); } catch (ArgumentNullException e) { Console.WriteLine(e.Message); }
+Console.ReadKey();
 
 void Demo(int[] array)
 {
@@ -45,7 +46,7 @@ int[] SortedSquares(int[] array)
 
     #region set pointers
     // iterate through to find when the sign changes
-    // find the first nonnegative integer
+    // find the first nonnegative integer and set rPointer to it
     // if it's not found, set left pointer to rightmost element
     int lPointer  = array.Length - 1;
     int rPointer = array.Length;
@@ -53,6 +54,7 @@ int[] SortedSquares(int[] array)
     {
         if (array[i] >= 0)
         {
+            // if i=0, then lPointer=-1; validLPointer will catch this and prevent IndexOutOfRangeException
             lPointer = i - 1;
             rPointer = i;
             break;
@@ -61,10 +63,9 @@ int[] SortedSquares(int[] array)
 
     #endregion
     #region populate array
-    // two pointers, one going left looking at negative numbers
-    // one going right looking at positive numbers
-    // compare absolute values to determine which square would be smaller
-    // put the smaller square in, then shift whichever pointer that we used
+    // lPointer moves left away from zero, rPointer moves right away from zero
+    // compare absolute values of the two pointers to determine which square is smaller
+    // put the smaller square into squaredArray, then shift whichever pointer was used
 
     bool validLPointer = lPointer >= 0;
     bool validRPointer = rPointer < squaredArray.Length;
@@ -73,8 +74,9 @@ int[] SortedSquares(int[] array)
     //exit loop if either pointer is invalid
     while(validLPointer && validRPointer)
     {
-        // figure out which points to smaller number
-        if (Math.Abs(array[lPointer]) < array[rPointer])
+        // determine which has smaller square
+        // array[lPointer] is always negative, array[rPointer] is always 0 or positive
+        if (-array[lPointer] < array[rPointer])
         {
             // lPointer points to the number with smaller square
             squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
@@ -94,7 +96,7 @@ int[] SortedSquares(int[] array)
         }
     }
 
-    //if only lPointer is valid, stop looking at rPointer
+    //if only lPointer is valid, stop checking validRPointer
     if(!validRPointer)
     {
         while (validLPointer)
@@ -108,7 +110,7 @@ int[] SortedSquares(int[] array)
         }
     }
 
-    //if only rPointer is valid, stop looking at lPointer
+    //if only rPointer is valid, stop checking validLPointer
     else if (!validLPointer)
     {
         while (validRPointer)
