@@ -1,4 +1,5 @@
 ﻿// write a function that accepts an array of int, sorted asc
+// write a function that accepts an array of int, sorted asc
 // return a new array that are squares, also sorted in asc
 
 // input: [1,2,3,4]
@@ -21,6 +22,7 @@ Demo([1, 2, 3, 4, 5]); //all positive input
 Demo([-4, -3, -2, -1]); //all negative input
 Demo([-3, -2, 0, 5]); // mix of negative, zero, and positive
 Demo([]); // empty array
+
 // ArgumentNullException should be thrown for null input
 try { Demo(null); } catch (ArgumentNullException e) { Console.WriteLine(e.Message); }
 
@@ -45,10 +47,8 @@ int[] SortedSquares(int[] array)
     // two pointers, one going left looking at negative numbers
     // one going right looking at positive numbers
     // initialized to avoid compiler error
-
     int leftPointer =0;
     int rightPointer=array.Length;
-    
 
     for (int i = 0; i < array.Length; i++)
     {
