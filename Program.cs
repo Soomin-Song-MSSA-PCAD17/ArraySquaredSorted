@@ -21,7 +21,8 @@ Demo([1, 2, 3, 4, 5]); //all positive input
 Demo([-4, -3, -2, -1]); //all negative input
 Demo([-3, -2, 0, 5]); // mix of negative, zero, and positive
 Demo([]); // empty array
-Demo(null); // null input
+// ArgumentNullException should be thrown for null input
+try { Demo(null); } catch (ArgumentNullException e) { Console.WriteLine(e.Message); }
 
 void Demo(int[] array)
 {
@@ -35,7 +36,7 @@ int[] SortedSquares(int[] array)
 {
     // handle edge cases: null or empty array
     ArgumentNullException.ThrowIfNull( array );
-    if(array.Length == 0) { return []; } // edge case: empty array
+    if(array.Length == 0) { return []; }
 
     int[] squaredArray = new int[array.Length];
 
