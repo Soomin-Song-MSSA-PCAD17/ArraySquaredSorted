@@ -17,20 +17,26 @@
 // input [int.MaxValue]
 // output [(whatever the number is, in long)]
 
-Demo([-1, 1, 2, 3]);
-Demo([1, 2, 3, 4, 5]);
-Demo([-4, -3, -2, -1,0]);
-Demo([-3, -2, 0, 5]);
+Demo([1, 2, 3, 4, 5]); //all positive input
+Demo([-4, -3, -2, -1]); //all negative input
+Demo([-3, -2, 0, 5]); // mix of negative, zero, and positive
+Demo([]); // empty array
+Demo(null); // null input
 
 void Demo(int[] array)
 {
+    int[] newArray = SortedSquares(array);
     Console.WriteLine($"Input:  [{String.Join(", ", array)}]");
-    Console.WriteLine($"Output: [{String.Join(", ", SortedSquares(array))}]\n");
+    Console.WriteLine($"Output: [{String.Join(", ", newArray)}]\n");
 }
 
 
 int[] SortedSquares(int[] array)
 {
+    // handle edge cases: null or empty array
+    ArgumentNullException.ThrowIfNull( array );
+    if(array.Length == 0) { return []; } // edge case: empty array
+
     int[] squaredArray = new int[array.Length];
 
     #region set pointers
