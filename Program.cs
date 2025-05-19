@@ -48,26 +48,13 @@ int[] SortedSquares(int[] array)
     int leftPointer =0;
     int rightPointer=array.Length;
     
-    // 3 cases: all negative, all positive, mix of two
-    if (array[0]>=0) // all positive
+
+    for (int i = 0; i < array.Length; i++)
     {
-        leftPointer = -1;
-        rightPointer = 0;
-    }
-    else if(array[array.Length - 1] <= 0) // all negative
-    {
-        leftPointer = array.Length - 1;
-        rightPointer = array.Length;
-    }
-    else // mix of pos and neg
-    {
-        for (int i = 1; i < array.Length; i++)
+        if (array[i] >= 0)
         {
-            if (array[i - 1] < 0 && array[i] >= 0)
-            {
-                leftPointer = i - 1;
-                rightPointer = i;
-            }
+            leftPointer = i - 1;
+            rightPointer = i;
         }
     }
     #endregion
