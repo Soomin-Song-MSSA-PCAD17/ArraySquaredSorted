@@ -1,4 +1,5 @@
-﻿// write a function that accepts an array of int, sorted asc
+﻿using System.Diagnostics;
+
 // write a function that accepts an array of int, sorted asc
 // return a new array that are squares, also sorted in asc
 
@@ -44,41 +45,80 @@ int[] SortedSquares(int[] array)
 
     #region set pointers
     // iterate through to find when the sign changes
-    // two pointers, one going left looking at negative numbers
-    // one going right looking at positive numbers
-    // initialized to avoid compiler error
-    int leftPointer =0;
-    int rightPointer=array.Length;
-
+    // find the first nonnegative integer
+    // if it's not found, set left pointer to rightmost element
+    int lPointer  = array.Length - 1;
+    int rPointer = array.Length;
     for (int i = 0; i < array.Length; i++)
     {
         if (array[i] >= 0)
         {
-            leftPointer = i - 1;
-            rightPointer = i;
+            lPointer = i - 1;
+            rPointer = i;
+            break;
         }
     }
+
     #endregion
     #region populate array
+    // two pointers, one going left looking at negative numbers
+    // one going right looking at positive numbers
     // compare absolute values to determine which square would be smaller
     // put the smaller square in, then shift whichever pointer that we used
-    for (int i = 0; i < squaredArray.Length; i++)
-    {
-        bool validLeftPointer = leftPointer>=0;
-        bool validRightPointer = rightPointer<squaredArray.Length;
 
-        if (!validRightPointer || // if rightPointer is invalid, then we should use leftPointer without having to compare
-            validLeftPointer && // if leftPointer is invalid, then we should use rightPointer without having to compare
-            Math.Abs(array[leftPointer]) < array[rightPointer] // figure out which points to smaller number
-            )
+    bool validLPointer = lPointer >= 0;
+    bool validRPointer = rPointer < squaredArray.Length;
+    int newArrayIndex = 0;
+
+    //exit loop if either pointer is invalid
+    while(validLPointer && validRPointer)
+    {
+        // figure out which points to smaller number
+        if (Math.Abs(array[lPointer]) < array[rPointer])
         {
-            squaredArray[i] = array[leftPointer] * array[leftPointer];
-            leftPointer--;
+            // lPointer points to the number with smaller square
+            squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
+            lPointer--;
+            validLPointer = lPointer >= 0;
+            Debug.Assert(validLPointer);
+            newArrayIndex++;
         }
         else
         {
-            squaredArray[i] = array[rightPointer] * array[rightPointer];
-            rightPointer++;
+            // rPointer points to the number with smaller square, or they are the same
+            squaredArray[newArrayIndex] = array[rPointer] * array[rPointer];
+            rPointer++;
+            validRPointer = rPointer < squaredArray.Length;
+            Debug.Assert(validRPointer);
+            newArrayIndex++;
+        }
+    }
+
+    //if only lPointer is valid, stop looking at rPointer
+    if(!validRPointer)
+    {
+        while (validLPointer)
+        {
+            // same as above loop
+            squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
+            lPointer--;
+            validLPointer = lPointer >= 0;
+            Debug.Assert(validLPointer);
+            newArrayIndex++;
+        }
+    }
+
+    //if only rPointer is valid, stop looking at lPointer
+    else if (!validLPointer)
+    {
+        while (validRPointer)
+        {
+            // same as above loop
+            squaredArray[newArrayIndex] = array[rPointer] * array[rPointer];
+            rPointer++;
+            validRPointer = rPointer < squaredArray.Length;
+            Debug.Assert(validRPointer);
+            newArrayIndex++;
         }
     }
     #endregion
