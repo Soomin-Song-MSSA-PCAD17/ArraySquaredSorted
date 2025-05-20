@@ -45,10 +45,9 @@ int[] SortedSquares(int[] array)
     int[] squaredArray = new int[array.Length];
 
     #region set pointers
-    // iterate through to find when the sign changes
-    // find the first nonnegative integer and set rPointer to it
-    // if it's not found, set left pointer to rightmost element
-    int lPointer  = array.Length - 1;
+    // search for first nonnegative integer to set as rPointer
+    // assign lPointer to rightmost element if all elements are negative
+    int lPointer = array.Length - 1;
     int rPointer = array.Length;
     for (int i = 0; i < array.Length; i++)
     {
@@ -60,70 +59,55 @@ int[] SortedSquares(int[] array)
             break;
         }
     }
+    Debug.Assert(lPointer == rPointer - 1);
 
-    #endregion
+    #endregion set pointers
     #region populate array
     // lPointer moves left away from zero, rPointer moves right away from zero
     // compare absolute values of the two pointers to determine which square is smaller
     // put the smaller square into squaredArray, then shift whichever pointer was used
-
     bool validLPointer = lPointer >= 0;
     bool validRPointer = rPointer < squaredArray.Length;
     int newArrayIndex = 0;
+    Debug.Assert(validLPointer || validRPointer); // at least one of the pointers should be valid
+
+    #region append functions
+    void AppendFromLPointer()
+    {
+        squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
+        lPointer--;
+        validLPointer = lPointer >= 0;
+        newArrayIndex++;
+    }
+    void AppendFromRPointer()
+    {
+        squaredArray[newArrayIndex] = array[rPointer] * array[rPointer];
+        rPointer++;
+        validRPointer = rPointer < squaredArray.Length;
+        newArrayIndex++;
+    }
+    #endregion append functions
 
     //exit loop if either pointer is invalid
-    while(validLPointer && validRPointer)
+    while (validLPointer && validRPointer)
     {
         // determine which has smaller square
         // array[lPointer] is always negative, array[rPointer] is always 0 or positive
-        if (-array[lPointer] < array[rPointer])
-        {
-            // lPointer points to the number with smaller square
-            squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
-            lPointer--;
-            validLPointer = lPointer >= 0;
-            Debug.Assert(validLPointer);
-            newArrayIndex++;
-        }
+        if (-array[lPointer] <= array[rPointer])
+        { AppendFromLPointer(); } // lPointer points to the number with smaller or equal square
         else
-        {
-            // rPointer points to the number with smaller square, or they are the same
-            squaredArray[newArrayIndex] = array[rPointer] * array[rPointer];
-            rPointer++;
-            validRPointer = rPointer < squaredArray.Length;
-            Debug.Assert(validRPointer);
-            newArrayIndex++;
-        }
+        { AppendFromRPointer(); } // rPointer points to the number with smaller square 
     }
 
     //if only lPointer is valid, stop checking validRPointer
-    if(!validRPointer)
-    {
-        while (validLPointer)
-        {
-            // same as above loop
-            squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
-            lPointer--;
-            validLPointer = lPointer >= 0;
-            Debug.Assert(validLPointer);
-            newArrayIndex++;
-        }
-    }
-
+    if (!validRPointer)
+    { while (validLPointer) { AppendFromLPointer(); }}
     //if only rPointer is valid, stop checking validLPointer
     else if (!validLPointer)
-    {
-        while (validRPointer)
-        {
-            // same as above loop
-            squaredArray[newArrayIndex] = array[rPointer] * array[rPointer];
-            rPointer++;
-            validRPointer = rPointer < squaredArray.Length;
-            Debug.Assert(validRPointer);
-            newArrayIndex++;
-        }
-    }
-    #endregion
+    { while (validRPointer) { AppendFromRPointer(); }}
+
+    Debug.Assert(newArrayIndex == array.Length);
+    #endregion populate array
 
     return squaredArray;
 }
