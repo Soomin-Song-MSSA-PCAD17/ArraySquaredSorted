@@ -72,14 +72,14 @@ int[] SortedSquares(int[] array)
     Debug.Assert(validLPointer || validRPointer); // at least one of the pointers should be valid
 
     #region append functions
-    void AppendFromLeft()
+    void AppendFromLPointer()
     {
         squaredArray[newArrayIndex] = array[lPointer] * array[lPointer];
         lPointer--;
         validLPointer = lPointer >= 0;
         newArrayIndex++;
     }
-    void AppendFromRight()
+    void AppendFromRPointer()
     {
         squaredArray[newArrayIndex] = array[rPointer] * array[rPointer];
         rPointer++;
@@ -94,21 +94,18 @@ int[] SortedSquares(int[] array)
         // determine which has smaller square
         // array[lPointer] is always negative, array[rPointer] is always 0 or positive
         if (-array[lPointer] <= array[rPointer])
-        { AppendFromLeft(); } // lPointer points to the number with smaller or equal square
+        { AppendFromLPointer(); } // lPointer points to the number with smaller or equal square
         else
-        { AppendFromRight(); } // rPointer points to the number with smaller square 
+        { AppendFromRPointer(); } // rPointer points to the number with smaller square 
     }
 
     //if only lPointer is valid, stop checking validRPointer
     if (!validRPointer)
-    {
-        while (validLPointer) { AppendFromLeft(); }
-    }
+    { while (validLPointer) { AppendFromLPointer(); }}
     //if only rPointer is valid, stop checking validLPointer
     else if (!validLPointer)
-    {
-        while (validRPointer) { AppendFromRight(); }
-    }
+    { while (validRPointer) { AppendFromRPointer(); }}
+
     Debug.Assert(newArrayIndex == array.Length);
     #endregion populate array
 
